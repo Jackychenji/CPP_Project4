@@ -14,5 +14,6 @@ void TransMatrix(Matrix *matrix);
 Matrix *matmul_plain(Matrix *matrix_A, Matrix *matrix_B);
 Matrix *matmul_avx2(Matrix *A, Matrix *B);
 Matrix *matmul_avx2_omp(Matrix *A, Matrix *B);
+Matrix *matmul_openblas(Matrix *A, Matrix *B);
 Matrix *matmul_omp(Matrix *A, Matrix *B);
 
