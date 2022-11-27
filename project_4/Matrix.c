@@ -6,6 +6,7 @@
 #include <immintrin.h>
 #include <omp.h>
 #include "Matrix.h"
+#include <cblas.h>
 
 Matrix *CreateMatrix(Matrix *matrix, size_t row, size_t column)
 {
@@ -83,7 +84,7 @@ Matrix *matmul_plain(Matrix *A, Matrix *B)
         TransMatrix(B);
         for (size_t i = 0; i < A->size; i += A->row)
         {
-            
+
             for (size_t j = 0; j < B->size; j += B->row)
             {
                 for (size_t k = 0; k < A->row; k++)
@@ -182,7 +183,7 @@ Matrix *matmul_avx2_omp(Matrix *A, Matrix *B)
         float sum[8] = {0};
         __m256 a, b;
         __m256 c = _mm256_setzero_ps();
-	omp_set_num_threads(4);
+        omp_set_num_threads(4);
 #pragma omp parallel for
         for (size_t i = 0; i < A->size; i += A->row)
         {
@@ -208,4 +209,14 @@ Matrix *matmul_avx2_omp(Matrix *A, Matrix *B)
         printf("Invalid Input\n");
         return NULL;
     }
+}
+
+Matrix *matmul_openblas(Matrix *A, Matrix *B)
+{
+    Matrix *C = CreateMatrix(C, A->row, B->column);
+
+    const double alpha = 1.0;
+    const double beta = 0.0;
+
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, A->row, B->column, A->column, alpha, A->data, A->column, B->data, B->column, beta, C->data, B->column);
 }
