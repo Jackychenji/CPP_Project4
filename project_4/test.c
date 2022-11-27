@@ -17,7 +17,7 @@ int main()
 	float *value2 = (float *)malloc(sizeof(float) * nowSize * nowSize);
 	InitialMatrix(matrix1, value1);
 	InitialMatrix(matrix2, value2);
-	long start, time1, time2, time3, result1, result2, result3;
+	long start, time1, time2, time3, time4, time5, result1, result2, result3, result4, result5;
 	start = clock();
 	printf("矩阵1 乘以 矩阵2: \n");
 	Matrix *matrix3 = matmul_plain(matrix1, matrix2); //乘法
@@ -27,15 +27,22 @@ int main()
 	Matrix *matrix4 = matmul_avx2(matrix1, matrix2);
 	// PrintMatrix(matrix4);
 	time2 = clock();
-	Matrix *matrix5 = matmul_avx2_omp(matrix1, matrix2);
+	Matrix *matrix5 = matmul_omp(matrix1, matrix2);
 	// PrintMatrix(matrix5);
 	time3 = clock();
+	// Matrix *matrix6 = matmul_avx2_omp(matrix1, matrix2);
+	time4 = clock();
+	Matrix *matrix7 = matmul_openblas(matrix1, matrix2);
+	time5 = clock();
 	result1 = time1 - start;
 	result2 = time2 - time1;
 	result3 = time3 - time2;
+	result4 = time4 - time3;
+	result5 = time5 - time4;
 	printf("plain运行时间:%f秒\n", (float)result1 / CLOCKS_PER_SEC);
 	printf("SIMD运行时间:%f秒\n", (float)result2 / CLOCKS_PER_SEC);
 	printf("OPENMP运行时间:%f秒\n", (float)result3 / CLOCKS_PER_SEC);
-
+	// printf("OPENMP+SIMD运行时间:%f秒\n", (float)result4 / CLOCKS_PER_SEC);
+	printf("Openblas运行时间:%f秒\n", (float)result5 / CLOCKS_PER_SEC);
 	return 0;
 }
